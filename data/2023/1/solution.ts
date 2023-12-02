@@ -51,6 +51,7 @@ const search = (line: string, fromRight = false, showLogs: boolean) => {
     let start: string = line[i];
     if (parseInt(start)) return start;
 
+    // below should really just be a separate function but ¯\_(ツ)_/¯
     if (fromRight) {
       for (let substring of Object.keys(reverseNumericSubstrings)) {
         let check = start;
