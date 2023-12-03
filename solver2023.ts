@@ -30,8 +30,6 @@ const answerFormatter = (currentDay) => {
     const example2Data: string[] = parseData(example2Path);
     const inputData: string[] = parseData(inputPath);
 
-    console.log(example1Data);
-    console.log(example2Data);
     console.log("Example 1:", solution.solve(example1Data, 1, true));
     console.log("   Part 1:", solution.solve(inputData, 1, false));
     if (example2Data.length) {
