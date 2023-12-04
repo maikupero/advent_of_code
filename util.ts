@@ -16,9 +16,25 @@ export const parseData = (AOCData: string, verbose = false) => {
   return res;
 }
 
+export const isDigit = (char: string) => {
+  return (
+    char === '0' ||
+    !!parseInt(char)
+  )
+}
+
 export const timeDiff = (startTime) => {
   const endTime = Date.now();
   return endTime - startTime;
+}
+
+export const coordsAreLegal = (y: number, x: number, grid: any[][]) => {
+  return (
+    y > -1 &&
+    x > -1 &&
+    y < grid.length &&
+    x < grid[0].length
+  )
 }
 
 const getUserInput = (query) => {
