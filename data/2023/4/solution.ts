@@ -60,7 +60,7 @@ const formatMapsWithCounts = (cardMaps: Map<string, number>[]): CardMapWithCount
   return res;
 }
 
-function countCopies(cards: CardMapWithCount[]): void {
+const countCopies = (cards: CardMapWithCount[]): void => {
   cards.forEach((card: CardMapWithCount, idx: number) => {
     for (let copies = 0; copies < card.count; copies++) {
       let numberOfWins: number = countWinsOnCard(card.cardMap);
