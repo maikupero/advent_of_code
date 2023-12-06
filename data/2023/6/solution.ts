@@ -3,11 +3,6 @@ interface Race {
   timeLimit: number;
   recordDistance: number;
 }
-interface Technique {
-  timeHeld: number;
-  speed: number;
-  distanceTraveled: number;
-}
 
 // READ THE DATA
 const formatData = (data: string[]) => {
