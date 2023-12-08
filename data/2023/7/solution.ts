@@ -56,19 +56,6 @@ const formatDataIntoHands = (data: string[], part: number) => {
   })
   return res;
 }
-// USEFUL
-
-// Five of a kind, where all five cards have the same label: AAAAA
-// Four of a kind, where four cards have the same label and one card has a different label: AA8AA
-// Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
-// Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
-// Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
-// One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
-// High card, where all cards' labels are distinct: 23456
-
-// So, 33332 and 2AAAA are both four of a kind hands, but 33332 is stronger because its first card is stronger. 
-// Similarly, 77888 and 77788 are both a full house, but 77888 is stronger because its third card is stronger 
-// (and both hands have the same first and second card).
 
 const getCardMap = (cards: Card[]) => {
   const cardMapping = new Map();
@@ -129,7 +116,7 @@ const getHandType = (cards: [string, number][], part: number) => {
       case 4: 
         return 'FIVE_OF_A_KIND' // 5 jokers, or 4 jokers match 1
       case 3: 
-        return cards[1][1] === 2
+        return cards.find((c) => c[0] !== 'J' && c[1] === 2)
           ? 'FIVE_OF_A_KIND' // 3 jokers and 2 of another
           : 'FOUR_OF_A_KIND' // 3 jokers and 1 of the others
       case 2:
@@ -201,7 +188,5 @@ export const solve = (
   console.log(":)")
   const unsortedHands: Hand[] = formatDataIntoHands([...data], part);
   const rankedHands: Hand[] = rankHands([...unsortedHands], part);
-  // rankedHands.forEach((card) => card.type === 'TWO_PAIR' && console.log(card.cards, card.type));
-  rankedHands.forEach((hand) => hand.cards.find((c, i) => c[0] === 'J' && console.log(hand.cards, hand.type)))
   return rankedHands.reduce((a,b, i) => a + b.bid * (i + 1), 0)
 }
