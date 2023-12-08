@@ -35,7 +35,7 @@ const answerFormatter = (currentDay) => {
     if (example2Data.length) {
       console.log("------------------")
       console.log("Example 2:", solution.solve(example2Data, 2, true));
-      // console.log("   Part 2:", solution.solve(inputData, 2, false));
+      console.log("   Part 2:", solution.solve(inputData, 2, false));
     }
 
     console.log(reverseAsteriskDivider);

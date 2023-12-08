@@ -16,11 +16,25 @@ export const parseData = (AOCData: string, verbose = false) => {
   return res;
 }
 
-export const isDigit = (char: string) => {
+export function isDigit(char: string) {
   return (
     char === '0' ||
     !!parseInt(char)
   )
+}
+
+export function isPrime(num: number) {
+  //todo
+}
+
+export function greatestCommonDenominator(x: number, y: number): number {
+  return (!y ? x : greatestCommonDenominator(y, x % y));
+}
+export function leastCommonDenominator(x: number, y: number): number {
+  return (x * y) / greatestCommonDenominator(x, y);
+}
+export function getLeastCommonMultiple(...nums: number[]): number {
+  return [...nums].reduce((a, b) => leastCommonDenominator(a, b));
 }
 
 export const timeDiff = (startTime) => {
