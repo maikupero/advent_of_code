@@ -45,41 +45,44 @@ interface Pipe {
 }
 interface Path {
   current: Pipe,
+  next: Pipe,
   distance: number,
 }
 type PipeType = '|' | '-' | 'L' | 'J' | '7' | 'F' | string
 type PipeNavigation = Map<PipeType, Function>;
 const PipeTypes: PipeType[] = ['|', '-', 'L', 'J', '7', 'F'];
 
-const handleVertical = (prev: Coords, curr: Pipe, grid: string[][]): Pipe => {
-  return prev.y < curr.location.y
-    ? {type: grid[prev.y + 2][prev.x], location: {y: prev.y + 2, x: prev.x}} // south
-    : {type: grid[prev.y - 2][prev.x], location: {y: prev.y - 2, x: prev.x}} // north
+const handleVertical = (path: Path, grid: string[][]): Pipe => {
+  return path.current.location.y < path.next.location.y
+    ? {type: grid[path.current.location.y + 2][path.current.location.x], location: {y: path.current.location.y + 2, x: path.current.location.x}} // south
+    : {type: grid[path.current.location.y - 2][path.current.location.x], location: {y: path.current.location.y - 2, x: path.current.location.x}} // north
+  
 }
-const handleHorizontal = (prev: Coords, curr: Pipe, grid: string[][]): Pipe => {
-  return prev.x < curr.location.x
-    ? {type: grid[prev.y][prev.x + 2], location: {y: prev.y, x: prev.x + 2}} // east
-    : {type: grid[prev.y][prev.x - 2], location: {y: prev.y, x: prev.x - 2}} // west
+const handleHorizontal = (path: Path, grid: string[][]): Pipe => {
+  return path.current.location.x < path.next.location.x
+    ? {type: grid[path.current.location.y][path.current.location.x + 2], location: {y: path.current.location.y, x: path.current.location.x + 2}} // east
+    : {type: grid[path.current.location.y][path.current.location.x - 2], location: {y: path.current.location.y, x: path.current.location.x - 2}} // west
 }
-const handleL = (prev: Coords, curr: Pipe, grid: string[][]): Pipe => {
-  return prev.x === curr.location.x
-    ? {type: grid[prev.y - 1][prev.x - 1], location: {y: prev.y - 1, x: prev.x - 1}} // northwest
-    : {type: grid[prev.y + 1][prev.x + 1], location: {y: prev.y + 1, x: prev.x + 1}} // southeast
+const handleL = (path: Path, grid: string[][]): Pipe => {
+  return path.current.location.y === path.next.location.y
+    ? {type: grid[path.current.location.y - 1][path.current.location.x - 1], location: {y: path.current.location.y - 1, x: path.current.location.x - 1}} // northwest
+    : {type: grid[path.current.location.y + 1][path.current.location.x + 1], location: {y: path.current.location.y + 1, x: path.current.location.x + 1}} // southeast
 }
-const handleJ = (prev: Coords, curr: Pipe, grid: string[][]): Pipe => {
-  return prev.x === curr.location.x
-  ? {type: grid[prev.y - 1][prev.x + 1], location: {y: prev.y - 1, x: prev.x + 1}} // northeast
-  : {type: grid[prev.y + 1][prev.x - 1], location: {y: prev.y + 1, x: prev.x - 1}} // southwest
+const handleJ = (path: Path, grid: string[][]): Pipe => {
+  console.log(path.current.location, path.next.location);
+  return path.current.location.y === path.next.location.y
+  ? {type: grid[path.current.location.y - 1][path.current.location.x + 1], location: {y: path.current.location.y - 1, x: path.current.location.x + 1}} // northeast
+  : {type: grid[path.current.location.y + 1][path.current.location.x - 1], location: {y: path.current.location.y + 1, x: path.current.location.x - 1}} // southwest
 }
-const handle7 = (prev: Coords, curr: Pipe, grid: string[][]): Pipe => {
-  return prev.x === curr.location.x
-  ? {type: grid[prev.y + 1][prev.x + 1], location: {y: prev.y + 1, x: prev.x + 1}} // southeast
-  : {type: grid[prev.y - 1][prev.x - 1], location: {y: prev.y - 1, x: prev.x - 1}} // southwest
+const handle7 = (path: Path, grid: string[][]): Pipe => {
+  return path.current.location.y === path.next.location.y
+  ? {type: grid[path.current.location.y + 1][path.current.location.x + 1], location: {y: path.current.location.y + 1, x: path.current.location.x + 1}} // southeast
+  : {type: grid[path.current.location.y - 1][path.current.location.x - 1], location: {y: path.current.location.y - 1, x: path.current.location.x - 1}} // southwest
 }
-const handleF = (prev: Coords, curr: Pipe, grid: string[][]): Pipe => {
-  return prev.x === curr.location.x
-  ? {type: grid[prev.y + 1][prev.x - 1], location: {y: prev.y + 1, x: prev.x - 1}} // southwest
-  : {type: grid[prev.y - 1][prev.x + 1], location: {y: prev.y - 1, x: prev.x + 1}} // northeast
+const handleF = (path: Path, grid: string[][]): Pipe => {
+  return path.current.location.y === path.next.location.y
+  ? {type: grid[path.current.location.y + 1][path.current.location.x - 1], location: {y: path.current.location.y + 1, x: path.current.location.x - 1}} // southwest
+  : {type: grid[path.current.location.y - 1][path.current.location.x + 1], location: {y: path.current.location.y - 1, x: path.current.location.x + 1}} // northeast
 }
 const Guide: PipeNavigation = new Map([
   ['|', handleVertical],
@@ -93,7 +96,22 @@ const Guide: PipeNavigation = new Map([
 
 // PART 1 STUFF
 const moveAlong = (path: Path, grid: string[][]) => {
-  const handlerToCall: Function = Guide.get(path.current.type)!;
+  const handlerToCall: Function = Guide.get(path.next.type)!;
+  console.log(handlerToCall);
+  const newNext: Pipe = handlerToCall(path, grid);
+  console.log(newNext)
+  path.current.location.x = path.next.location.x;
+  path.current.location.y = path.next.location.y; // next -> current
+  path.current.type = path.next.type; 
+  path.next.location.x = newNext.location.x;
+  path.next.location.y = newNext.location.y; // new next -> next
+  path.next.type = newNext.type;
+  path.distance++;
+  
+  
+  // [path.current.location.x, path.current.location.y, path.current.type] = [path.next.location.x, path.next.location.y, path.next.type]; // next -> current
+  // [path.next.location.x, path.next.location.y, path.next.type] = [newNext.location.x, newNext.location.y, newNext.type]; // new next -> next
+  
   // TODO implement some kind of prev, current, next functionality for this. 
   // both paths should be finding the next, but curr still as S. 
   // moveAlong should call the handler, so it will need the next locations data. 
@@ -104,6 +122,7 @@ const moveAlong = (path: Path, grid: string[][]) => {
 
 const checkEndCondition = (path1: Path, path2: Path) => {
   return (
+    path1.distance > 0 &&
     path1.current.location.x === path2.current.location.x &&
     path1.current.location.y === path2.current.location.y
   )
@@ -132,30 +151,37 @@ const findStartingPath = (grid: string[][], start: Coords, alreadyFound?: Coords
         x: start.x,
       },
     },
-    // next: ...  todo
+    next: {
+      type: 'S',
+      location: {
+        y: start.y,
+        x: start.x,
+      },
+    },
     distance: 0,
   }
-  const coordsToCheck: Coords[] = [
-    {y: start.y - 1, x: start.x}, 
-    {y: start.y + 1, x: start.x}, 
-    {y: start.y, x: start.x - 1}, 
-    {y: start.y, x: start.x + 1}, 
-  ];
-  coordsToCheck.forEach((adjacent: Coords) => {
+  const coordsToCheck: any[] = [ // im not bothering with types cause only for this case you need to check 
+    {y: start.y - 1, x: start.x, legal: ['|', '7', 'F']},  // specific pipes that can or can not branch off start depending on direction.
+    {y: start.y + 1, x: start.x, legal: ['|', 'L', 'J']}, 
+    {y: start.y, x: start.x - 1, legal: ['-', 'L', 'F']}, 
+    {y: start.y, x: start.x + 1, legal: ['-', '7', 'J']}, 
+  ]; 
+  for (let adjacent of coordsToCheck) {
     if (
       coordsAreLegal(adjacent.y, adjacent.x, grid) && // make sure it's in bounds first
       (
         !alreadyFound || 
-        adjacent.y !== alreadyFound.y && adjacent.x !== alreadyFound.x
+        !(adjacent.y === alreadyFound.y && adjacent.x === alreadyFound.x)
       )
     ) {
-      if (PipeTypes.includes(grid[adjacent.y][adjacent.x])) {
-        result.current.type = grid[adjacent.y][adjacent.x];
-        result.current.location.y = adjacent.y;
-        result.current.location.x = adjacent.x;
+      if (adjacent.legal.includes(grid[adjacent.y][adjacent.x])) {
+        result.next.type = grid[adjacent.y][adjacent.x];
+        result.next.location.y = adjacent.y;
+        result.next.location.x = adjacent.x;
+        return result;
       }
     }
-  })
+  }
   return result;
 }
 
@@ -176,7 +202,7 @@ export const solve = (
 
   let oneDirection: Path = findStartingPath(grid, start);
   console.log('oneDirection', oneDirection)
-  let otherDirection: Path = findStartingPath(grid, start, oneDirection.current.location)
+  let otherDirection: Path = findStartingPath(grid, start, oneDirection.next.location)
   console.log('otherDirection', otherDirection)
 
   while (!checkEndCondition(oneDirection, otherDirection)) {
