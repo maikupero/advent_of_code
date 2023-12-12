@@ -2,6 +2,14 @@ import { getDayInput } from "./constants/values.js";
 import readline from "readline";
 import nReadlines from 'n-readlines';
 
+export interface GridXY {
+  y: number,
+  x: number,
+}
+export interface GridXYZ extends GridXY {
+  z: number,
+}
+
 export const parseData = (AOCData: string, verbose = false) => {  
   const dataLines = new nReadlines(AOCData);
   let line;
@@ -42,13 +50,49 @@ export const timeDiff = (startTime) => {
   return endTime - startTime;
 }
 
-export const coordsAreLegal = (y: number, x: number, grid: any[][]) => {
+export const printGrid = (grid: any[][], propToPrint?: string) => {
+  grid.forEach((line: any[]) => 
+    console.log(...line.map((point: any) => 
+      typeof point === 'string' || typeof point === 'number' 
+        ? point
+        : propToPrint
+          ? point[propToPrint]
+          : '?'
+  )))
+}
+export const coordsAreLegal = (coord: GridXY, grid: any[][]) => {
   return (
-    y > -1 &&
-    x > -1 &&
-    y < grid.length &&
-    x < grid[0].length
+    coord.y > -1 &&
+    coord.x > -1 &&
+    coord.y < grid.length &&
+    coord.x < grid[0].length
   )
+}
+export const coordsAlreadyFound = (arr: GridXY[], y: number, x: number): boolean => {
+  return -1 !== arr.findIndex((coord) => coord.y === y && coord.x === x) 
+}
+export const getAdjacentCoords = (
+  location: GridXY, 
+  grid: any[][],
+  includeDiagonal?: boolean,
+) => {
+  const result: GridXY[] = [];
+  const coordsToCheckLegality: GridXY[] = [
+    {y: location.y - 1, x: location.x},
+    {y: location.y, x: location.x - 1},
+    {y: location.y + 1, x: location.x},
+    {y: location.y, x: location.x + 1},
+  ]
+  if (includeDiagonal) {
+    coordsToCheckLegality.push({y: location.y - 1, x: location.x - 1});
+    coordsToCheckLegality.push({y: location.y + 1, x: location.x - 1});
+    coordsToCheckLegality.push({y: location.y - 1, x: location.x + 1});
+    coordsToCheckLegality.push({y: location.y + 1, x: location.x + 1});
+  }
+  coordsToCheckLegality.forEach((coord: GridXY) => 
+    coordsAreLegal(coord, grid) && result.push(coord)
+  )
+  return result;  
 }
 
 const getUserInput = (query) => {
