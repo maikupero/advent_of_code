@@ -721,7 +721,6 @@ const markEnclosedAreas = (path: GridXY, direction: string, grid: Pipe[][], star
     coordsAreLegal({y: searching.y, x: searching.x}, grid) &&
     grid[searching.y][searching.x] && !grid[searching.y][searching.x].onPath && grid[searching.y][searching.x].onPath === false
   ) { // for some reason this would fail
-    if(searching.x === 12) console.log(grid[path.y][path.x], searching, direction)
     grid[searching.y][searching.x].type = '*';
     switch (direction) {
       case 'right':
