@@ -777,7 +777,9 @@ export const solve = (
     loopClockwise(startCoords, grid);
     printGrid(grid, 'type');
     return grid.reduce((gridCount: number, b: Pipe[]) => 
-      gridCount + b.reduce((lineCount: number, b: Pipe) => lineCount + (b.type === '*' ? 1 : 0), 0),
-      0);
+      gridCount + b.reduce((lineCount: number, b: Pipe) => 
+        lineCount + (b.type === '*' ? 1 : 0), 0
+      ), 0
+    );
   }
 }
