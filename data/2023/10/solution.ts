@@ -592,17 +592,17 @@ const findLoopFromEdge = (grid: Pipe[][]) => {
 }
 
 
-const loopClockwise = (startXY: GridXY, grid) => {
+const loopClockwise = (entryXY: GridXY, grid) => {
   const next =                          // because we are coming from the left, when we find the loop, 
-    coordsAreLegal({y: startXY.y - 1, x: startXY.x}, grid) && // to continue following it clockwise, our next pipe will be up;
-    grid[startXY.y - 1][startXY.x].onPath                     // and if it is not up, it will be right.
-      ? {y: startXY.y - 1, x: startXY.x}                      // there is no case where our first encounter with the path
-      : {y: startXY.y, x: startXY.x + 1};                     // from the left will require us to look down or left for the next step.
+    coordsAreLegal({y: entryXY.y - 1, x: entryXY.x}, grid) && // to continue following it clockwise, our next pipe will be up;
+    grid[entryXY.y - 1][entryXY.x].onPath                     // and if it is not up, it will be right.
+      ? {y: entryXY.y - 1, x: entryXY.x}                      // there is no case where our first encounter with the path
+      : {y: entryXY.y, x: entryXY.x + 1};                     // from the left will require us to look down or left for the next step.
   
   const path: Path = {  
     current: {
-      type: grid[startXY.y][startXY.x].type,
-      location: {y: grid[startXY.y][startXY.x].location.y, x: grid[startXY.y][startXY.x].location.x},
+      type: grid[entryXY.y][entryXY.x].type,
+      location: {y: grid[entryXY.y][entryXY.x].location.y, x: grid[entryXY.y][entryXY.x].location.x},
     },
     next: {
       type: grid[next.y][next.x].type,
@@ -617,11 +617,11 @@ const loopClockwise = (startXY: GridXY, grid) => {
     grid,
   )!;
   
-  while (!(startXY.y === path.next.location.y && startXY.x === path.next.location.x)) {
-    markEnclosedAreas(path.current.location, direction, grid, startXY);
+  while (!(entryXY.y === path.next.location.y && entryXY.x === path.next.location.x)) {
+    markEnclosedAreas(path.current.location, direction, grid, entryXY);
     let extraSearchDirection = extraSearchNeeded(path.current.location, direction, grid);
     if (extraSearchDirection.length) {
-      markEnclosedAreas(path.current.location, extraSearchDirection, grid, startXY)
+      markEnclosedAreas(path.current.location, extraSearchDirection, grid, entryXY)
     }
     direction = updateDirection(path, direction, grid)!
     const handlerToCall: Function = Guide.get(path.next.type)!;
@@ -698,9 +698,9 @@ const extraSearchNeeded = (curr: GridXY, direction: string, grid: Pipe[][]) => {
   return '';
 }
 
-const markEnclosedAreas = (path: GridXY, direction: string, grid: Pipe[][], startXY: GridXY) => {
+const markEnclosedAreas = (path: GridXY, direction: string, grid: Pipe[][], entryXY: GridXY) => {
   // exception cases to handle differently 
-  if (path.y === startXY.y && path.x === startXY.x) return;
+  if (path.y === entryXY.y && path.x === entryXY.x) return;
 
   let searching = {y: path.y, x: path.x}
   switch (direction) {
