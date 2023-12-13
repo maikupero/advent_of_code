@@ -720,7 +720,7 @@ const markEnclosedAreas = (path: GridXY, direction: string, grid: Pipe[][], star
   while (
     coordsAreLegal({y: searching.y, x: searching.x}, grid) &&
     grid[searching.y][searching.x] && !grid[searching.y][searching.x].onPath && grid[searching.y][searching.x].onPath === false
-  ) { // for some reason this would fail
+  ) { // for some reason this would fail without all these stupid checks because !grid[searching.y][searching.x].onPath would crash if onPath wasnt a prop.... sometimes. 
     grid[searching.y][searching.x].type = '*';
     switch (direction) {
       case 'right':
