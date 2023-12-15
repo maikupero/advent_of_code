@@ -50,15 +50,30 @@ export const timeDiff = (startTime) => {
   return endTime - startTime;
 }
 
-export const printGrid = (grid: any[][], propToPrint?: string) => {
+export const printGrid = (
+  grid: any[][], 
+  propToPrint?: string,
+  conversion?: {convert: number | string, to: number | string},
+) => {
   grid.forEach((line: any[]) => 
-    console.log(...line.map((point: any) => 
-      typeof point === 'string' || typeof point === 'number' 
-        ? point
-        : propToPrint
-          ? point[propToPrint]
-          : '?'
-  )))
+    console.log(...line.map((point: any) => {
+      if (typeof point === 'string' || typeof point === 'number') {
+        if (conversion) {
+          return point === conversion.convert ? conversion.to : point
+        } else {
+          return point;
+        }
+      } else {
+        if (propToPrint) {
+          if (conversion) {
+            return point[propToPrint] === conversion.convert ? conversion.to : point[propToPrint]
+          } else {
+            return point[propToPrint] ?? '?'
+          }
+        }
+      }
+    }))
+  )
 }
 export const coordsAreLegal = (coord: GridXY, grid: any[][]) => {
   return (
