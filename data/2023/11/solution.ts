@@ -12,7 +12,7 @@ interface Path {
   distance: number,
 }
 type Universe = Point[][];
-const EXPANSION_RATE = 1000000; // could pass this in if a variable, etc. but just hardcoding it for part 2
+const EXPANSION_RATE = 1000000; 
 
 // USEFUL INFO
   // > Only count each pair once; order within the pair doesn't matter. 
