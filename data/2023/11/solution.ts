@@ -12,6 +12,7 @@ interface Path {
   distance: number,
 }
 type Universe = Point[][];
+const EXPANSION_RATE = 1000000; // could pass this in if a variable, etc. but just hardcoding it for part 2
 
 // USEFUL INFO
   // > Only count each pair once; order within the pair doesn't matter. 
@@ -146,7 +147,6 @@ function navigate(a: GridXY, b: GridXY): Path { // to check if this path was alr
 }
 
 function autoPilot(a: GridXY, b: GridXY, expandColIdxs: Set<number>, expandRowIdxs: Set<number>): Path { // to check if this path was already found 
-  const EXPANSION_RATE = 1000000; // could pass this in if a variable, etc. but just hardcoding it for part 2
   let distance: number = 0;
   let y: number = a.y;
   let x: number = a.x;
