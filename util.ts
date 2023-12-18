@@ -75,7 +75,7 @@ export const printGrid = (
     }))
   )
 }
-export const coordsAreLegal = (coord: GridXY, grid: any[][]) => {
+export function coordsAreLegal(coord: GridXY, grid: any[][]): boolean  {
   return (
     coord.y > -1 &&
     coord.x > -1 &&
@@ -83,14 +83,20 @@ export const coordsAreLegal = (coord: GridXY, grid: any[][]) => {
     coord.x < grid[0].length
   )
 }
-export const coordsAlreadyFound = (arr: GridXY[], y: number, x: number): boolean => {
+export function coordsMatch(current: GridXY, target: GridXY): boolean {
+  return (
+    current.y === target.y &&
+    current.x === target.x
+  )
+}
+export function coordsAlreadyFound(arr: GridXY[], y: number, x: number): boolean {
   return -1 !== arr.findIndex((coord) => coord.y === y && coord.x === x) 
 }
-export const getAdjacentCoords = (
+export function getAdjacentCoords(
   location: GridXY, 
   grid: any[][],
   includeDiagonal?: boolean,
-) => {
+): GridXY[] {
   const result: GridXY[] = [];
   const coordsToCheckLegality: GridXY[] = [
     {y: location.y - 1, x: location.x},
